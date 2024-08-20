@@ -33,3 +33,10 @@ export default function RootLayout() {
     </ThemeProvider>
   );
 }
+
+//configurar navegação
+//configurar campo data de despesas e renda
+//realizar tela dos gráficos
+//realizar um menu
+//realizar banco
+//ajustar campo de despeas R$

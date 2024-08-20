@@ -1,50 +1,49 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useFonts } from 'expo-font';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { format } from 'date-fns';
 
-const ExpensesScreen: React.FC = () => {
+const IncomeScreen: React.FC = () => {
   const [date, setDate] = useState<Date | undefined>(undefined);
-  const [totalCost, setTotalCost] = useState<number | undefined>(undefined);
+  const [income, setIncome] = useState<string>('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('Aluguel');
+  const [category, setCategory] = useState('Investimento');
   const [otherCategory, setOtherCategory] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const handleInsertExpense = () => {
-    if (!date || totalCost === undefined || !description || !category) {
+  const handleInsertIncome = () => {
+    if (!date || !income || !description || !category) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
     } else {
-      Alert.alert('Sucesso', 'Despesa registrada com sucesso!');
+      Alert.alert('Sucesso', 'Renda registrada com sucesso!');
     }
   };
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(false);
+    setDate(currentDate);
+  };
+
+  const handleIncomeChange = (text: string) => {
+    const numericValue = text.replace(/[^0-9.,]/g, '');
+    setIncome(numericValue);
+  };
+  
 
   const [fontsLoaded] = useFonts({
     SpaceMono: require('../../../assets/fonts/Poppins-Regular.ttf'),
   });
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(false);
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
-  };
-
-  const handleCostChange = (text: string) => {
-    const numericValue = parseFloat(text.replace(/[^0-9.,]/g, '').replace(',', '.'));
-    setTotalCost(isNaN(numericValue) ? undefined : numericValue);
-  };
-  
-  
   if (!fontsLoaded) {
     return null;
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Adicionar Despesa</Text>
+      <Text style={styles.title}>Registrar Renda</Text>
 
       <TouchableOpacity onPress={() => setShowDatePicker(true)}>
         <TextInput
@@ -58,20 +57,20 @@ const ExpensesScreen: React.FC = () => {
 
       {showDatePicker && (
         <DateTimePicker
-          value={new Date()}
+          value={date || new Date()}
           mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+          display="default"
           onChange={handleDateChange}
         />
       )}
 
       <TextInput
         style={styles.input}
-        placeholder="Custo Total"
+        placeholder="Renda"
         placeholderTextColor="#D3D3D3"
-        value={totalCost !== undefined ? totalCost.toString() : ''}
-        onChangeText={handleCostChange}
-        keyboardType="numeric"
+        value={income}
+        onChangeText={handleIncomeChange}
+        keyboardType="decimal-pad"
       />
       <TextInput
         style={styles.input}
@@ -90,13 +89,9 @@ const ExpensesScreen: React.FC = () => {
           setCategory(itemValue);
         }}
       >
-        <Picker.Item label="Aluguel" value="Aluguel" />
-        <Picker.Item label="Energia" value="Energia" />
-        <Picker.Item label="Água" value="Água" />
-        <Picker.Item label="Saúde" value="Saúde" />
-        <Picker.Item label="Educação" value="Educação" />
-        <Picker.Item label="Transporte" value="Transporte" />
-        <Picker.Item label="Comunicação" value="Comunicação" />
+        <Picker.Item label="Investimento" value="Investimento" />
+        <Picker.Item label="Renda Extra" value="Renda Extra" />
+        <Picker.Item label="Bônus" value="Bônus" />
         <Picker.Item label="Outros" value="Outros" />
       </Picker>
       {category === 'Outros' && (
@@ -108,8 +103,8 @@ const ExpensesScreen: React.FC = () => {
           onChangeText={setOtherCategory}
         />
       )}
-      <TouchableOpacity style={styles.button} onPress={handleInsertExpense}>
-        <Text style={styles.buttonText}>Inserir Despesa</Text>
+      <TouchableOpacity style={styles.button} onPress={handleInsertIncome}>
+        <Text style={styles.buttonText}>Inserir Renda</Text>
       </TouchableOpacity>
     </View>
   );
@@ -150,7 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 1)',
   },
   otherCategoryInput: {
-    marginTop: 10, 
+    marginTop: 10,
   },
   button: {
     backgroundColor: '#6A5ACD',
@@ -166,4 +161,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExpensesScreen;
+export default IncomeScreen;

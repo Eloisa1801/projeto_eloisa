@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -29,6 +31,7 @@ export default function RootLayout() {
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="signup" options={{ headerShown: false }} />
         <Stack.Screen name="expenses" options={{ headerShown: false }} />
+        
       </Stack>
     </ThemeProvider>
   );

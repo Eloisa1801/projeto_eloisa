@@ -31,15 +31,16 @@ export default function RootLayout() {
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="signup" options={{ headerShown: false }} />
         <Stack.Screen name="expenses" options={{ headerShown: false }} />
-        
       </Stack>
     </ThemeProvider>
   );
 }
 
-//configurar navegação
 //configurar campo data de despesas e renda
 //realizar tela dos gráficos
 //realizar um menu
 //realizar banco
 //ajustar campo de despeas R$
+//verificar inicio de index e signup (RootStackParamList)
+//validações de campos
+//alerts

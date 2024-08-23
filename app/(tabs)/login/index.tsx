@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useFonts } from 'expo-font';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import SignUpScreen from '../cadastro/signup'; 
-
+import { Link } from 'expo-router';
 
 type RootStackParamList = {
   login: undefined;
@@ -22,10 +21,6 @@ export default function LoginScreen({ navigation }: Props) {
     } else {
       Alert.alert('Sucesso', 'Login realizado com sucesso!');
     }
-  };
-
-  const handleSignUp = () => {
-    navigation.navigate('SignUp'); 
   };
 
   const [fontsLoaded] = useFonts({
@@ -61,8 +56,8 @@ export default function LoginScreen({ navigation }: Props) {
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-        <Text style={styles.buttonText}>Criar Conta</Text>
+      <TouchableOpacity style={styles.button}>
+        <Link href='/(tabs)/cadastro/signup' style={styles.buttonText}>Criar Conta</Link>
       </TouchableOpacity>
     </View>
   );

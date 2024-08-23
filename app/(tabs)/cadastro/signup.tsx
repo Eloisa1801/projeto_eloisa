@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useFonts } from 'expo-font';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Link } from 'expo-router';
 
 type RootStackParamList = {
   login: undefined;
@@ -77,8 +78,8 @@ export default function SignUpScreen({ navigation }: Props) {
         <Text style={styles.buttonText}>Criar Conta</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('login')}>
-        <Text style={styles.buttonText}>Já tem uma conta? Login</Text>
+      <TouchableOpacity style={styles.button}>
+      <Link href={'/login'} style={styles.buttonText}>Já tem uma conta? Login</Link>
       </TouchableOpacity>
     </View>
   );

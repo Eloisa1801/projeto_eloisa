@@ -53,7 +53,7 @@ export default function LoginScreen({ navigation }: Props) {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
+      <Link href='/(tabs)/despesas/expense' style={styles.buttonText}>Login</Link>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button}>

@@ -41,6 +41,5 @@ export default function RootLayout() {
 //realizar um menu
 //realizar banco
 //ajustar campo de despeas R$
-//verificar inicio de index e signup (RootStackParamList)
 //validações de campos
 //alerts

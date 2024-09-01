@@ -22,7 +22,7 @@ const ExpensesScreen: React.FC = () => {
   };
 
   const [fontsLoaded] = useFonts({
-    SpaceMono: require('../../../assets/fonts/Poppins-Regular.ttf'),
+    Poppins: require('../../../assets/fonts/Poppins-Regular.ttf'),
   });
 
   const handleDateChange = (event: any, selectedDate?: Date) => {

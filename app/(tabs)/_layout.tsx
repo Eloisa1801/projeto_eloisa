@@ -31,8 +31,14 @@ export default function TabsLayout() {
 
 //configurar campo data de despesas e renda
 //realizar tela dos gráficos
-//realizar banco
 //ajustar campo de despeas R$
 //validações de campos
 //alerts
+//realizar banco
+  //cadastro e verificar login
+  //inserir despesas e rendas
+  //listar despesas e rendas
+  //editar despesas e rendas
+  //remover despesas e rendas
+  
 

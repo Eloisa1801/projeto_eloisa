@@ -35,4 +35,4 @@ export default function TabsLayout() {
 //ajustar campo de despeas R$
 //validações de campos
 //alerts
-//ajustar fonte
+

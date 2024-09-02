@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
-import { useFonts } from 'expo-font';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { format } from 'date-fns';
@@ -112,7 +111,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
     backgroundColor: '#FFFFFF',
-    fontFamily: 'Poppins',
   },
   title: {
     fontSize: 36,
@@ -120,7 +118,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     color: '#191970',
-    fontFamily: 'SpaceMono',
+    fontFamily: 'Poppins',
   },
   input: {
     height: 50,
@@ -131,7 +129,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'rgba(255, 255, 255, 1)',
     color: '#191970',
-    fontFamily: 'SpaceMono',
+    fontFamily: 'Poppins',
   },
   picker: {
     height: 50,
@@ -154,7 +152,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     textAlign: 'center',
-    fontFamily: 'SpaceMono',
+    fontFamily: 'Poppins',
   },
 });
 

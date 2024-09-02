@@ -8,8 +8,7 @@ export default function useCachedResources() {
     async function loadResourcesAndDataAsync() {
       try {
         await Font.loadAsync({
-          Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
-          SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+          Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
         });
       } catch (e) {
         console.warn(e);

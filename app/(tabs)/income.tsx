@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
     color: '#191970',
-    fontFamily: 'SpaceMono',
+    fontFamily: 'Poppins',
   },
   input: {
     height: 50,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'rgba(255, 255, 255, 1)',
     color: '#191970',
-    fontFamily: 'SpaceMono',
+    fontFamily: 'Poppins',
   },
   picker: {
     height: 50,
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     textAlign: 'center',
-    fontFamily: 'SpaceMono',
+    fontFamily: 'Poppins',
   },
 });
 

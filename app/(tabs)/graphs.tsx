@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
+    fontFamily: 'Poppins',
   },
   title: {
     fontSize: 24,

@@ -1,4 +1,4 @@
-import React, { useState, Component } from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useFonts } from 'expo-font';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -9,40 +9,45 @@ type RootStackParamList = {
   SignUp: undefined;
 };
 
-type Props = NativeStackScreenProps<RootStackParamList, 'login'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 
-export default function LoginScreen({ navigation }: Props) {
-  const [username, setUsername] = useState('');
+export default function SignUpScreen({ navigation }: Props) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleLogin = () => {
-    if (!username || !password) {
+  const handleSignUp = () => {
+    console.log('handleSignUp called');
+    if (!name || !email || !password || !confirmPassword) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+    } else if (password !== confirmPassword) {
+      Alert.alert('Erro', 'As senhas não coincidem.');
     } else {
-      Alert.alert('Sucesso', 'Login realizado com sucesso!');
+      Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
     }
   };
-
-  const [fontsLoaded] = useFonts({
-    Poppins: require('../../../assets/fonts/Poppins-Regular.ttf'),
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Finantech</Text>
-
+      
       <TextInput
         style={styles.input}
-        placeholder="Email ou Nome de Usuário"
+        placeholder="Nome Completo"
         placeholderTextColor="#D3D3D3"
-        value={username}
-        onChangeText={setUsername}
+        value={name}
+        onChangeText={setName}
       />
-
+      
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#D3D3D3"
+        value={email}
+        onChangeText={setEmail}
+      />
+      
       <TextInput
         style={styles.input}
         placeholder="Senha"
@@ -51,13 +56,22 @@ export default function LoginScreen({ navigation }: Props) {
         onChangeText={setPassword}
         secureTextEntry
       />
-
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-      <Link href='/(tabs)/despesas/expense' style={styles.buttonText}>Login</Link>
+      
+      <TextInput
+        style={styles.input}
+        placeholder="Confirme a Senha"
+        placeholderTextColor="#D3D3D3"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        secureTextEntry
+      />
+      
+      <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+        <Text style={styles.buttonText}>Criar Conta</Text>
       </TouchableOpacity>
-
+      
       <TouchableOpacity style={styles.button}>
-        <Link href='/(tabs)/cadastro/signup' style={styles.buttonText}>Criar Conta</Link>
+      <Link href={'/'} style={styles.buttonText}>Já tem uma conta? Login</Link>
       </TouchableOpacity>
     </View>
   );
@@ -69,6 +83,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 20,
     backgroundColor: '#FFFFFF',
+    fontFamily: 'Poppins',
   },
   title: {
     fontSize: 36,

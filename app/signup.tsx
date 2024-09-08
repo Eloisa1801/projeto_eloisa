@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useFonts } from 'expo-font';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Link } from 'expo-router';
 import Modal from 'react-native-modal';
@@ -21,11 +20,12 @@ export default function SignUpScreen({ navigation }: Props) {
   const [modalMessage, setModalMessage] = useState('');
 
   const handleSignUp = async () => {
-    console.log('handleSignUp called');
     if (!name || !email || !password || !confirmPassword) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      setModalMessage('Por favor, preencha todos os campos.');
+      setShowModal(true);
     } else if (password !== confirmPassword) {
-      Alert.alert('Erro', 'As senhas não coincidem.');
+      setModalMessage('As senhas não coincidem.');
+      setShowModal(true);
     } else {
       try {
         console.log('Sending request to server');
@@ -43,6 +43,9 @@ export default function SignUpScreen({ navigation }: Props) {
 
         setModalMessage(data.msg || 'Erro ao registrar usuário');
         setShowModal(true);
+        if (response.ok) {
+          setModalMessage('Cadastro realizado com sucesso!');
+        }
       } catch (error) {
         console.error('Error during fetch:', error);
         setModalMessage('Erro ao registrar usuário');
@@ -53,10 +56,14 @@ export default function SignUpScreen({ navigation }: Props) {
 
   const handleModalClose = () => {
     setShowModal(false);
-    setName('');
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
+    if (modalMessage === 'Cadastro realizado com sucesso!') {
+
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      //navigation.navigate('login'); // ajustar navegação
+    }
   };
 
   return (

@@ -28,14 +28,12 @@ export default function TabsLayout() {
 }
 
 
-
+//verificar navegação do login e cadastro
 //configurar campo data de despesas e renda
 //realizar tela dos gráficos
 //ajustar campo de despeas R$
 //validações de campos
-//alerts
-//realizar banco
-  //cadastro e verificar login
+//modal e limpar campos
   //inserir despesas e rendas
   //listar despesas e rendas
   //editar despesas e rendas

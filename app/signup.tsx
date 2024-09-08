@@ -3,6 +3,7 @@ import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert } from 'reac
 import { useFonts } from 'expo-font';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Link } from 'expo-router';
+import Modal from 'react-native-modal';
 
 type RootStackParamList = {
   login: undefined;
@@ -16,16 +17,46 @@ export default function SignUpScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     console.log('handleSignUp called');
     if (!name || !email || !password || !confirmPassword) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
     } else if (password !== confirmPassword) {
       Alert.alert('Erro', 'As senhas não coincidem.');
     } else {
-      Alert.alert('Sucesso', 'Cadastro realizado com sucesso!');
+      try {
+        console.log('Sending request to server');
+        const response = await fetch('http://localhost:5000/api/users/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await response.json();
+        console.log('Response received:', response);
+        console.log('Response JSON:', data);
+
+        setModalMessage(data.msg || 'Erro ao registrar usuário');
+        setShowModal(true);
+      } catch (error) {
+        console.error('Error during fetch:', error);
+        setModalMessage('Erro ao registrar usuário');
+        setShowModal(true);
+      }
     }
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
   };
 
   return (
@@ -71,8 +102,17 @@ export default function SignUpScreen({ navigation }: Props) {
       </TouchableOpacity>
       
       <TouchableOpacity style={styles.button}>
-      <Link href={'/'} style={styles.buttonText}>Já tem uma conta? Login</Link>
+        <Link href={'/'} style={styles.buttonText}>Já tem uma conta? Login</Link>
       </TouchableOpacity>
+
+      <Modal isVisible={showModal} onBackdropPress={handleModalClose}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>{modalMessage}</Text>
+          <TouchableOpacity style={styles.modalButton} onPress={handleModalClose}>
+            <Text style={styles.modalButtonText}>OK</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -115,5 +155,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     fontFamily: 'Poppins',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 15,
+  },
+  modalButton: {
+    backgroundColor: '#6A5ACD',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  modalButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
   },
 });

@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const Expense = require('../models/Expense');
 const router = express.Router();
 
 //rota cadastro
@@ -58,6 +59,28 @@ router.post('/login', async (req, res) => {
     res.status(500).send('Servidor com erro');
   }
 });
+
+// Rota despesa
+router.post('/add', async (req, res) => {
+  const { userId, date, totalCost, description, category } = req.body;
+
+  try {
+    const newExpense = new Expense({
+      userId,
+      date,
+      totalCost,
+      description,
+      category,
+    });
+
+    await newExpense.save();
+    res.status(201).json({ msg: 'Despesa registrada com sucesso' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: 'Erro no servidor' });
+  }
+});
+
 
 
 module.exports = router;

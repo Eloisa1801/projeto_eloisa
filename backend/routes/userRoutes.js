@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Expense = require('../models/Expense');
+const Income = require('../models/Income');
 const router = express.Router();
 
 //rota cadastro
@@ -81,6 +82,25 @@ router.post('/add', async (req, res) => {
   }
 });
 
+// Rota renda
+router.post('/incomes/add', async (req, res) => {
+  const { userId, date, amount, description, category } = req.body;
 
+  try {
+    const newIncome = new Income({
+      userId,
+      date,
+      amount,
+      description,
+      category,
+    });
+
+    await newIncome.save();
+    res.status(201).json({ msg: 'Renda registrada com sucesso' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ msg: 'Erro no servidor' });
+  }
+});
 
 module.exports = router;

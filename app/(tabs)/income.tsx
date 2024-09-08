@@ -1,23 +1,56 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { useFonts } from 'expo-font';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
+import DateSelector from '../DateSelector';
 import { Picker } from '@react-native-picker/picker';
 import { format } from 'date-fns';
 
 const IncomeScreen: React.FC = () => {
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [income, setIncome] = useState<string>('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('Investimento');
-  const [otherCategory, setOtherCategory] = useState('');
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [date, setDate] = useState<Date | null>(null); // Alterado para Date | null
+  const [income, setIncome] = useState<number | undefined>(undefined);
+  const [description, setDescription] = useState<string>('');
+  const [category, setCategory] = useState<string>('Investimento');
+  const [otherCategory, setOtherCategory] = useState<string>('');
+  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [modalMessage, setModalMessage] = useState<string>('');
 
-  const handleInsertIncome = () => {
-    if (!date || !income || !description || !category) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+  const handleInsertIncome = async () => {
+    if (!date || income === undefined || !description || !category) {
+      setModalMessage('Por favor, preencha todos os campos.');
+      setModalVisible(true);
     } else {
-      Alert.alert('Sucesso', 'Renda registrada com sucesso!');
+      try {
+        const response = await fetch('http://localhost:5000/api/users/incomes/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: '66ddebb87634911e21a8836b', // como pegar id do usuário?
+            date: date.toISOString(),
+            amount: income,
+            description,
+            category: category === 'Outros' ? otherCategory : category,
+          }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setModalMessage('Renda registrada com sucesso!');
+          setDate(null);
+          setIncome(undefined);
+          setDescription('');
+          setCategory('Investimento');
+          setOtherCategory('');
+        } else {
+          setModalMessage(data.msg || 'Erro ao registrar renda');
+        }
+        setModalVisible(true);
+      } catch (error) {
+        console.error('Error during fetch:', error);
+        setModalMessage('Erro ao registrar renda');
+        setModalVisible(true);
+      }
     }
   };
 
@@ -28,39 +61,23 @@ const IncomeScreen: React.FC = () => {
   };
 
   const handleIncomeChange = (text: string) => {
-    const numericValue = text.replace(/[^0-9.,]/g, '');
-    setIncome(numericValue);
+    const cleanedText = text.replace(/[^0-9.,]/g, '');
+    const normalizedText = cleanedText.replace(',', '.');
+    const numericValue = parseFloat(normalizedText);
+    setIncome(isNaN(numericValue) ? undefined : numericValue);
   };
-  
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Registrar Renda</Text>
 
-      <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-        <TextInput
-          style={styles.input}
-          placeholder="Data"
-          placeholderTextColor="#D3D3D3"
-          value={date ? format(date, 'dd/MM/yyyy') : ''}
-          editable={false}
-        />
-      </TouchableOpacity>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={date || new Date()}
-          mode="date"
-          display="default"
-          onChange={handleDateChange}
-        />
-      )}
+      <DateSelector date={date} onChange={setDate} />
 
       <TextInput
         style={styles.input}
         placeholder="Renda"
         placeholderTextColor="#D3D3D3"
-        value={income}
+        value={income !== undefined ? income.toString().replace('.', ',') : ''}
         onChangeText={handleIncomeChange}
         keyboardType="decimal-pad"
       />
@@ -98,6 +115,25 @@ const IncomeScreen: React.FC = () => {
       <TouchableOpacity style={styles.button} onPress={handleInsertIncome}>
         <Text style={styles.buttonText}>Inserir Renda</Text>
       </TouchableOpacity>
+
+      <Modal
+        transparent={true}
+        animationType="slide"
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalText}>{modalMessage}</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -151,6 +187,33 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     fontFamily: 'Poppins',
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContainer: {
+    width: 300,
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  modalButton: {
+    backgroundColor: '#6A5ACD',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  modalButtonText: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 

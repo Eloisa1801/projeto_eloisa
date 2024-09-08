@@ -32,8 +32,6 @@ export default function TabsLayout() {
 //como passar o id do usuário?
 //configurar campo data de renda e despeas
 //realizar tela dos gráficos com filtros
-//modal e limpar campos
-  //inserir despesas e rendas
   //editar despesas e rendas
   //remover despesas e rendas
   

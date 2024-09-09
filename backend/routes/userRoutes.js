@@ -103,4 +103,58 @@ router.post('/incomes/add', async (req, res) => {
   }
 });
 
+// Função auxiliar para extrair o mês e ano de uma data
+const getMonthYear = (date) => {
+  const d = new Date(date);
+  return {
+    month: d.getMonth() + 1,
+    year: d.getFullYear(),
+  };
+};
+
+// Rota para buscar despesas filtradas por mês
+router.get('/expenses', async (req, res) => {
+  const { month, year, userId } = req.query;
+
+  try {
+    const expenses = await Expense.find({
+      userId,
+      $expr: {
+        $and: [
+          { $eq: [{ $month: '$date' }, parseInt(month)] },
+          { $eq: [{ $year: '$date' }, parseInt(year)] },
+        ],
+      },
+    });
+
+    const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    res.json({ total, categories: expenses });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao buscar despesas' });
+  }
+});
+
+// Rota para buscar renda filtrada por mês
+router.get('/income', async (req, res) => {
+  const { month, year, userId } = req.query;
+
+  try {
+    const income = await Income.find({
+      userId,
+      $expr: {
+        $and: [
+          { $eq: [{ $month: '$date' }, parseInt(month)] },
+          { $eq: [{ $year: '$date' }, parseInt(year)] },
+        ],
+      },
+    });
+
+    const total = income.reduce((sum, inc) => sum + inc.amount, 0);
+    res.json({ total });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao buscar renda' });
+  }
+});
+
+
 module.exports = router;

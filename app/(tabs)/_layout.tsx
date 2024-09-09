@@ -31,8 +31,7 @@ export default function TabsLayout() {
 //verificar navegação do login e cadastro
 //como passar o id do usuário?
 //configurar campo data de renda e despeas
-//realizar tela dos gráficos com filtros
-  //editar despesas e rendas
-  //remover despesas e rendas
+//ajustar rota de busca das despesas pelo mes 
+
   
 

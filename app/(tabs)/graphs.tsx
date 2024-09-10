@@ -5,6 +5,17 @@ import MonthSelector from '../MonthSelector';
 
 const screenWidth = Dimensions.get('window').width;
 
+const purpleColors = [
+  '#6A5ACD', 
+  '#8A2BE2', 
+  '#9370DB', 
+  '#DDA0DD', 
+  '#DA70D6', 
+  '#EE82EE', 
+  '#BA55D3', 
+  '#C71585',
+];
+
 const GraphsScreen: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>('01');
   const [selectedYear, setSelectedYear] = useState<string>('2024');  
@@ -12,13 +23,11 @@ const GraphsScreen: React.FC = () => {
   const [income, setIncome] = useState<number>(0);
   const [categories, setCategories] = useState<any[]>([]);
 
- 
   useEffect(() => {
     const fetchData = async () => {
       try {
-
-        const expenseResponse = await fetch(`https://sua-api.com/expenses?month=${selectedMonth}&year=${selectedYear}&userId=seuUserId`);
-        const incomeResponse = await fetch(`https://sua-api.com/income?month=${selectedMonth}&year=${selectedYear}&userId=seuUserId`);
+        const expenseResponse = await fetch(`http://localhost:5000/api/users/expenses?month=${selectedMonth}&year=${selectedYear}&userId=66ddebb87634911e21a8836b`);
+        const incomeResponse = await fetch(`http://localhost:5000/api/users/income?month=${selectedMonth}&year=${selectedYear}&userId=66ddebb87634911e21a8836b`);
 
         const expenseData = await expenseResponse.json();
         const incomeData = await incomeResponse.json();
@@ -36,6 +45,16 @@ const GraphsScreen: React.FC = () => {
 
   const balance = income - expenses; 
 
+  const pieData = categories
+    .filter(category => category.totalCost > 0 && category.category) 
+    .map((category, index) => ({
+      name: category.category,  
+      population: category.totalCost,
+      color: purpleColors[index % purpleColors.length], 
+      legendFontColor: '#7F7F7F',
+      legendFontSize: 15,
+    }));
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Gráfico de Despesas por Categoria</Text>
@@ -43,13 +62,7 @@ const GraphsScreen: React.FC = () => {
       <MonthSelector selectedMonth={selectedMonth} onChange={setSelectedMonth} />
 
       <PieChart
-        data={categories.map(category => ({
-          name: category.category,  
-          population: category.amount,
-          color: category.color || '#000',  
-          legendFontColor: '#7F7F7F',
-          legendFontSize: 15,
-        }))}
+        data={pieData}
         width={screenWidth}
         height={220}
         chartConfig={{

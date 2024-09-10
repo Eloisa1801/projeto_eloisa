@@ -24,7 +24,7 @@ const ExpensesScreen: React.FC = () => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            userId: '66ddebb87634911e21a8836b', // substitua pelo ID do usuário correto
+            userId: '66ddebb87634911e21a8836b', // como pegar o id do usuário?
             date: date.toISOString(),
             totalCost,
             description,
@@ -55,11 +55,9 @@ const ExpensesScreen: React.FC = () => {
   const handleTotalCostChange = (text: string) => {
     // Remove caracteres não numéricos, exceto vírgulas e pontos
     const cleanedText = text.replace(/[^0-9.,]/g, '');
-    
-    // Substitui a vírgula por ponto, se houver
+  
     const normalizedText = cleanedText.replace(',', '.');
 
-    // Converte o texto para número e define o estado
     const numericValue = parseFloat(normalizedText);
     setTotalCost(isNaN(numericValue) ? undefined : numericValue);
   };

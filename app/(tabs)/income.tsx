@@ -5,7 +5,7 @@ import { Picker } from '@react-native-picker/picker';
 import { format } from 'date-fns';
 
 const IncomeScreen: React.FC = () => {
-  const [date, setDate] = useState<Date | null>(null); // Alterado para Date | null
+  const [date, setDate] = useState<Date | null>(null); 
   const [income, setIncome] = useState<number | undefined>(undefined);
   const [description, setDescription] = useState<string>('');
   const [category, setCategory] = useState<string>('Investimento');

@@ -127,7 +127,8 @@ router.get('/expenses', async (req, res) => {
       },
     });
 
-    const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    const total = expenses.reduce((sum, expense) => sum + expense.totalCost, 0);
+
     res.json({ total, categories: expenses });
   } catch (err) {
     res.status(500).json({ error: 'Erro ao buscar despesas' });

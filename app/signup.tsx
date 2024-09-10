@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Link } from 'expo-router';
 import Modal from 'react-native-modal';
 
-type RootStackParamList = {
-  login: undefined;
-  SignUp: undefined;
-};
-
-type Props = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
-
-export default function SignUpScreen({ navigation }: Props) {
+export default function SignUpScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -57,12 +49,12 @@ export default function SignUpScreen({ navigation }: Props) {
   const handleModalClose = () => {
     setShowModal(false);
     if (modalMessage === 'Cadastro realizado com sucesso!') {
-
       setName('');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
-      //navigation.navigate('login'); // ajustar navegação
+      
+      window.location.href = '/'; 
     }
   };
 

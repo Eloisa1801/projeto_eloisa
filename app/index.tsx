@@ -1,19 +1,9 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Link } from 'expo-router';
 import Modal from 'react-native-modal';
-import { useNavigation } from '@react-navigation/native';
 
-type RootStackParamList = {
-  login: undefined;
-  SignUp: undefined;
-  ExpenseScreen: undefined;
-};
-
-type Props = NativeStackScreenProps<RootStackParamList, 'login'>;
-
-export default function LoginScreen({ navigation }: Props) {
+export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -56,16 +46,10 @@ export default function LoginScreen({ navigation }: Props) {
   const handleModalClose = () => {
     setShowModal(false);
     if (modalMessage === 'Login realizado com sucesso!') {
-      if (navigation && navigation.navigate) {
-        navigation.navigate('ExpenseScreen'); //verificar esta navegação
-      } else {
-        console.error('Navigation is not available');
-      }
+      window.location.href = '/expense';
     }
   };
   
-  
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Finantech</Text>

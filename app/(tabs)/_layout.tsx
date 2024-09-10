@@ -28,7 +28,6 @@ export default function TabsLayout() {
 }
 
 
-//verificar navegação do login e cadastro
 //como passar o id do usuário? (em despesas, renda e gráficos)
 
   

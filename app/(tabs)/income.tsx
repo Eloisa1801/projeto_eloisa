@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
 import DateSelector from '../DateSelector';
 import { Picker } from '@react-native-picker/picker';
-import { format } from 'date-fns';
 
 const IncomeScreen: React.FC = () => {
   const [date, setDate] = useState<Date | null>(null); 

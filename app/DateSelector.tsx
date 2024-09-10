@@ -31,7 +31,7 @@ const DateSelector: React.FC<DateSelectorProps> = ({ date, onChange }) => {
         mode="date"
         display="default"
         onChange={(event, selectedDate) => onChange(selectedDate || null)}
-   
+        style={styles.datePicker}
       />
     </View>
   );
@@ -49,9 +49,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 1)',
     color: '#191970',
     fontFamily: 'Poppins',
-    flex: 1,
+  },
+  datePicker: {
+    width: '100%',
+    height: '100%',
   },
 });
-
 
 export default DateSelector;

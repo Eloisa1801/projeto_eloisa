@@ -2,12 +2,17 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Link } from 'expo-router';
 import Modal from 'react-native-modal';
+import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+
+  const router = useRouter();
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -32,6 +37,12 @@ export default function LoginScreen() {
       if (response.ok) {
         setModalMessage('Login realizado com sucesso!');
         setShowModal(true);
+        if (data.userId) {
+          await AsyncStorage.setItem('userId', data.userId);
+          console.log('userId salvo no AsyncStorage:', data.userId);
+        } else {
+          console.error('userId não encontrado na resposta do backend');
+        }
       } else {
         setModalMessage(data.msg || 'Erro ao fazer login');
         setShowModal(true);
@@ -42,14 +53,16 @@ export default function LoginScreen() {
       setShowModal(true);
     }
   };
-    
-  const handleModalClose = () => {
+  
+  
+
+  const handleModalClose = async () => {
     setShowModal(false);
     if (modalMessage === 'Login realizado com sucesso!') {
-      window.location.href = '/expense';
+      router.push('/expense'); 
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Finantech</Text>

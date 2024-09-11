@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import DateSelector from '../DateSelector';
 import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ExpensesScreen: React.FC = () => {
   const [date, setDate] = useState<Date | null>(null);
@@ -16,48 +17,58 @@ const ExpensesScreen: React.FC = () => {
     if (!date || totalCost === undefined || !description || !category) {
       setModalMessage('Por favor, preencha todos os campos.');
       setModalVisible(true);
-    } else {
-      try {
-        const response = await fetch('http://localhost:5000/api/users/add', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: '66ddebb87634911e21a8836b', // como pegar o id do usuário?
-            date: date.toISOString(),
-            totalCost,
-            description,
-            category: category === 'Outros' ? otherCategory : category,
-          }),
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-          setModalMessage('Despesa registrada com sucesso!');
-          setDate(null);
-          setTotalCost(undefined);
-          setDescription('');
-          setCategory('Aluguel');
-          setOtherCategory('');
-        } else {
-          setModalMessage(data.msg || 'Erro ao registrar despesa');
-        }
+      return;
+    }
+  
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      console.log("Valor de userId recuperado do AsyncStorage:", userId);
+  
+      if (!userId) {
+        setModalMessage('Erro: Usuário não encontrado.');
         setModalVisible(true);
-      } catch (error) {
-        console.error('Error during fetch:', error);
-        setModalMessage('Erro ao registrar despesa');
-        setModalVisible(true);
+        return;
       }
+  
+      const response = await fetch('http://localhost:5000/api/users/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          date: date.toISOString(),
+          totalCost,
+          description,
+          category: category === 'Outros' ? otherCategory : category,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setModalMessage('Despesa registrada com sucesso!');
+        setDate(null);
+        setTotalCost(undefined);
+        setDescription('');
+        setCategory('Aluguel');
+        setOtherCategory('');
+      } else {
+        setModalMessage(data.msg || 'Erro ao registrar despesa');
+      }
+  
+      setModalVisible(true);
+    } catch (error) {
+      console.error('Error during fetch:', error);
+      setModalMessage('Erro ao registrar despesa');
+      setModalVisible(true);
     }
   };
+  
 
   const handleTotalCostChange = (text: string) => {
-    // Remove caracteres não numéricos, exceto vírgulas e pontos
     const cleanedText = text.replace(/[^0-9.,]/g, '');
-  
     const normalizedText = cleanedText.replace(',', '.');
-
     const numericValue = parseFloat(normalizedText);
     setTotalCost(isNaN(numericValue) ? undefined : numericValue);
   };

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions} from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 import MonthSelector from '../MonthSelector';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -18,16 +19,34 @@ const purpleColors = [
 
 const GraphsScreen: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>('01');
-  const [selectedYear, setSelectedYear] = useState<string>('2024');  
+  const [selectedYear, setSelectedYear] = useState<string>('2024');
   const [expenses, setExpenses] = useState<number>(0);
   const [income, setIncome] = useState<number>(0);
   const [categories, setCategories] = useState<any[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('userId');
+        if (storedUserId) {
+          setUserId(storedUserId);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar o ID do usuário:', error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
+  useEffect(() => {
+    if (!userId) return; 
+
     const fetchData = async () => {
       try {
-        const expenseResponse = await fetch(`http://localhost:5000/api/users/expenses?month=${selectedMonth}&year=${selectedYear}&userId=66ddebb87634911e21a8836b`);
-        const incomeResponse = await fetch(`http://localhost:5000/api/users/income?month=${selectedMonth}&year=${selectedYear}&userId=66ddebb87634911e21a8836b`);
+        const expenseResponse = await fetch(`http://localhost:5000/api/users/expenses?month=${selectedMonth}&year=${selectedYear}&userId=${userId}`);
+        const incomeResponse = await fetch(`http://localhost:5000/api/users/income?month=${selectedMonth}&year=${selectedYear}&userId=${userId}`);
 
         const expenseData = await expenseResponse.json();
         const incomeData = await incomeResponse.json();
@@ -41,7 +60,7 @@ const GraphsScreen: React.FC = () => {
     };
 
     fetchData();
-  }, [selectedMonth, selectedYear]);
+  }, [selectedMonth, selectedYear, userId]);
 
   const balance = income - expenses; 
 

@@ -28,7 +28,5 @@ export default function TabsLayout() {
 }
 
 
-//como passar o id do usuário? (em despesas, renda e gráficos)
-
   
 

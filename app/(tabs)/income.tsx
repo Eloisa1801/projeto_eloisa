@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, StyleSheet, TouchableOpacity, Alert, Modal } from 'react-native';
+import { View, TextInput, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import DateSelector from '../DateSelector';
 import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Adicione esta linha
 
 const IncomeScreen: React.FC = () => {
   const [date, setDate] = useState<Date | null>(null); 
@@ -9,7 +10,6 @@ const IncomeScreen: React.FC = () => {
   const [description, setDescription] = useState<string>('');
   const [category, setCategory] = useState<string>('Investimento');
   const [otherCategory, setOtherCategory] = useState<string>('');
-  const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>('');
 
@@ -17,53 +17,50 @@ const IncomeScreen: React.FC = () => {
     if (!date || income === undefined || !description || !category) {
       setModalMessage('Por favor, preencha todos os campos.');
       setModalVisible(true);
-    } else {
-      try {
-        const response = await fetch('http://localhost:5000/api/users/incomes/add', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: '66ddebb87634911e21a8836b', // como pegar id do usuário?
-            date: date.toISOString(),
-            amount: income,
-            description,
-            category: category === 'Outros' ? otherCategory : category,
-          }),
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-          setModalMessage('Renda registrada com sucesso!');
-          setDate(null);
-          setIncome(undefined);
-          setDescription('');
-          setCategory('Investimento');
-          setOtherCategory('');
-        } else {
-          setModalMessage(data.msg || 'Erro ao registrar renda');
-        }
-        setModalVisible(true);
-      } catch (error) {
-        console.error('Error during fetch:', error);
-        setModalMessage('Erro ao registrar renda');
-        setModalVisible(true);
-      }
+      return;
     }
-  };
 
-  const handleDateChange = (event: any, selectedDate?: Date) => {
-    const currentDate = selectedDate || date;
-    setShowDatePicker(false);
-    setDate(currentDate);
-  };
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      console.log("Valor de userId recuperado do AsyncStorage:", userId);
 
-  const handleIncomeChange = (text: string) => {
-    const cleanedText = text.replace(/[^0-9.,]/g, '');
-    const normalizedText = cleanedText.replace(',', '.');
-    const numericValue = parseFloat(normalizedText);
-    setIncome(isNaN(numericValue) ? undefined : numericValue);
+      if (!userId) {
+        setModalMessage('Erro: Usuário não encontrado.');
+        setModalVisible(true);
+        return;
+      }
+
+      const response = await fetch('http://localhost:5000/api/users/incomes/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          date: date.toISOString(),
+          amount: income,
+          description,
+          category: category === 'Outros' ? otherCategory : category,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setModalMessage('Renda registrada com sucesso!');
+        setDate(null);
+        setIncome(undefined);
+        setDescription('');
+        setCategory('Investimento');
+        setOtherCategory('');
+      } else {
+        setModalMessage(data.msg || 'Erro ao registrar renda');
+      }
+      setModalVisible(true);
+    } catch (error) {
+      console.error('Error during fetch:', error);
+      setModalMessage('Erro ao registrar renda');
+      setModalVisible(true);
+    }
   };
 
   return (
@@ -77,7 +74,12 @@ const IncomeScreen: React.FC = () => {
         placeholder="Renda"
         placeholderTextColor="#D3D3D3"
         value={income !== undefined ? income.toString().replace('.', ',') : ''}
-        onChangeText={handleIncomeChange}
+        onChangeText={(text) => {
+          const cleanedText = text.replace(/[^0-9.,]/g, '');
+          const normalizedText = cleanedText.replace(',', '.');
+          const numericValue = parseFloat(normalizedText);
+          setIncome(isNaN(numericValue) ? undefined : numericValue);
+        }}
         keyboardType="decimal-pad"
       />
       <TextInput
@@ -136,7 +138,6 @@ const IncomeScreen: React.FC = () => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

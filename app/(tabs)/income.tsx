@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import DateSelector from '../DateSelector';
 import { Picker } from '@react-native-picker/picker';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Adicione esta linha
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const IncomeScreen: React.FC = () => {
   const [date, setDate] = useState<Date | null>(null); 
